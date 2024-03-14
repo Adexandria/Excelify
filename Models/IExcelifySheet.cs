@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Excelify.Models
 {
-    public interface ISheet
+    public interface IExcelifySheet
     {
         public Stream File { get; set; }
     }
