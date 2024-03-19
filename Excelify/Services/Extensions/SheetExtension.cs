@@ -93,39 +93,40 @@ namespace Excelify.Services.Extensions
                 var column = sheet.GetRow(rowNumber) ?? sheet.CreateRow(rowNumber);
                 var entity = entities[rowNumber - 1];
                 var property = entity.GetType().GetProperty(propertyName);
-                if (property != null)
+                if (property == null)
                 {
-                    if (property.PropertyType == typeof(int))
-                    {
+                    return;
+                }
+
+                switch (property.PropertyType )
+                {
+                    case Type when property.PropertyType == typeof(int) :
                         column.CreateCell(cellNumber, CellType.Numeric)
-                               .SetCellValue((int)property.GetValue(entity));
-                    }
-                    else if (property.PropertyType == typeof(float) || property.PropertyType == typeof(double))
-                    {
+                         .SetCellValue((int)property.GetValue(entity));
+                    break;
+
+                    case Type when property.PropertyType == typeof(double):
                         column.CreateCell(cellNumber, CellType.Numeric)
-                                 .SetCellValue((double)property.GetValue(entity));
-                    }
-                    else if (property.PropertyType == typeof(DateTime))
-                    {
+                         .SetCellValue((double)property.GetValue(entity));
+                    break;
+
+                    case Type when property.PropertyType == typeof(DateTime):
                         var value = (DateTime)property.GetValue(entity);
 
                         column.CreateCell(cellNumber, CellType.String)
                             .SetCellValue(value.ToString());
+                        break;
 
-                    }
-                    else if (property.PropertyType == typeof(bool))
-                    {
+                    case Type when property.PropertyType == typeof(bool):
                         column.CreateCell(cellNumber, CellType.Boolean)
-                                 .SetCellValue((bool)property.GetValue(entity));
-                    }
-                    else
-                    {
+                             .SetCellValue((bool)property.GetValue(entity));
+                        break;
+                        
+                    default:
                         var x = column.CreateCell(cellNumber, CellType.String);
                         x.SetCellValue((string)property.GetValue(entity));
                         x.CellStyle.WrapText = true;
-                    }
-
-
+                        break;
                 }
 
                 InsertValues(sheet, entities, propertyName, cellNumber, ++rowNumber);
