@@ -1,6 +1,6 @@
 ﻿using Excelify.Models;
 using Excelify.Services.Utility;
-using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using System.Data;
 
 
@@ -10,7 +10,9 @@ namespace Excelify.Services
     {
         IList<T> ImportToEntity<T> (IImportSheet sheet) where T : class;
         IList<T> ImportToEntity<T> (IImportSheet sheet, IExcelMapper excelifyMapper) where T : class;
-        ISheet ExportToExcel<T>(IEntityExport<T> dataExport) where T : class;
+        Stream ExportToExcel<T>(IEntityExport<T> dataExport, string fileName) where T : class;
+        XSSFWorkbook ExportToExcel<T>(IEntityExport<T> dataExport) where T : class;
         DataTable ImportSheet(IImportSheet sheet);
+        void SetSheetName(int sheetName);
     }
 }

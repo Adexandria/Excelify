@@ -1,4 +1,5 @@
 ﻿using Excelify.Models;
+using Excelify.Services.Utility;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.Data;
@@ -57,5 +58,79 @@ namespace Excelify.Services.Extensions
             }
             return table;
         }
+
+        public static XSSFWorkbook CreateSheet<T>(this IEntityExport<T> dataExport, List<ExcelifyProperty> extractedAttributes)
+        {
+            var workBook = new XSSFWorkbook();
+            var workSheet = workBook.CreateSheet(dataExport.SheetName);
+            var headerRow = workSheet.CreateRow(0);
+            for (int i = 0; i < extractedAttributes.Count; i++)
+            {
+                ICell cell;
+                if (extractedAttributes[i].AttributeName is int value)
+                {
+                    headerRow.CreateCell(value, CellType.String)
+                       .SetCellValue(extractedAttributes[i].PropertyName);
+                    InsertValues(workSheet, dataExport.Entities,
+                        extractedAttributes[i].PropertyName, i);
+                }
+                else
+                {
+                    headerRow.CreateCell(i, CellType.String)
+                         .SetCellValue((string)extractedAttributes[i].AttributeName);
+                    InsertValues(workSheet, dataExport.Entities,
+                       extractedAttributes[i].PropertyName, i);
+                }
+            }
+
+            return workBook;
+        }
+
+        private static void InsertValues<T>(ISheet sheet, IList<T> entities, string propertyName, int cellNumber, int rowNumber = 1)
+        {
+            if (rowNumber <= entities.Count)
+            {
+                var column = sheet.GetRow(rowNumber) ?? sheet.CreateRow(rowNumber);
+                var entity = entities[rowNumber - 1];
+                var property = entity.GetType().GetProperty(propertyName);
+                if (property != null)
+                {
+                    if (property.PropertyType == typeof(int))
+                    {
+                        column.CreateCell(cellNumber, CellType.Numeric)
+                               .SetCellValue((int)property.GetValue(entity));
+                    }
+                    else if (property.PropertyType == typeof(float) || property.PropertyType == typeof(double))
+                    {
+                        column.CreateCell(cellNumber, CellType.Numeric)
+                                 .SetCellValue((double)property.GetValue(entity));
+                    }
+                    else if (property.PropertyType == typeof(DateTime))
+                    {
+                        var value = (DateTime)property.GetValue(entity);
+
+                        column.CreateCell(cellNumber, CellType.String)
+                            .SetCellValue(value.ToString());
+
+                    }
+                    else if (property.PropertyType == typeof(bool))
+                    {
+                        column.CreateCell(cellNumber, CellType.Boolean)
+                                 .SetCellValue((bool)property.GetValue(entity));
+                    }
+                    else
+                    {
+                        var x = column.CreateCell(cellNumber, CellType.String);
+                        x.SetCellValue((string)property.GetValue(entity));
+                        x.CellStyle.WrapText = true;
+                    }
+
+
+                }
+
+                InsertValues(sheet, entities, propertyName, cellNumber, ++rowNumber);
+            }
+        }
+
     }
 }

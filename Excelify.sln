@@ -5,7 +5,7 @@ VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Excelify", "Excelify\Excelify.csproj", "{875F0427-C5FD-434E-8B15-EDBF49791CC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Excelify.API", "..\Excelify.API\Excelify.API.csproj", "{2AC004CF-092C-4908-9BFB-DA0C5A2F04AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Excelify.API", "Excelify.API\Excelify.API.csproj", "{CD6F049B-A79B-4C65-AB6B-29B795615029}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{875F0427-C5FD-434E-8B15-EDBF49791CC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{875F0427-C5FD-434E-8B15-EDBF49791CC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{875F0427-C5FD-434E-8B15-EDBF49791CC6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2AC004CF-092C-4908-9BFB-DA0C5A2F04AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2AC004CF-092C-4908-9BFB-DA0C5A2F04AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2AC004CF-092C-4908-9BFB-DA0C5A2F04AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2AC004CF-092C-4908-9BFB-DA0C5A2F04AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD6F049B-A79B-4C65-AB6B-29B795615029}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD6F049B-A79B-4C65-AB6B-29B795615029}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD6F049B-A79B-4C65-AB6B-29B795615029}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD6F049B-A79B-4C65-AB6B-29B795615029}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

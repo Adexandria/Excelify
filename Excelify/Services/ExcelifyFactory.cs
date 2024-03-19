@@ -25,7 +25,7 @@ namespace Excelify.Services
             
           
         }
-        public IExcelService CreateService(string extensionType, int _sheetName)
+        public IExcelService CreateService( string extensionType)
         {
             IExcelService excelService;
             try
@@ -35,14 +35,30 @@ namespace Excelify.Services
                 {
                     var excelType = excelTypes.FirstOrDefault() ?? throw new Exception("Excel service does not exist");
 
-                    excelService = Activator.CreateInstance(excelType, _sheetName) as IExcelService;
-
+                    excelService = Activator.CreateInstance(excelType) as IExcelService;
                 }
                 else
                 {
                     throw new Exception("Invalid extension type", new Exception("Only xlsx and xls types are accepted"));
                 }
 
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to create service", ex);
+            }
+
+            return excelService;
+        }
+
+        public IExcelService CreateService()
+        {
+            IExcelService excelService;
+            try
+            {
+               var excelType = excelTypes.FirstOrDefault() ?? throw new Exception("Excel service does not exist");
+
+               excelService = Activator.CreateInstance(excelType) as IExcelService;
             }
             catch (Exception ex)
             {

@@ -33,43 +33,22 @@ namespace Excelify.Services.Utility
             Dictionary<string,object> attributeValues, List<DataRow> currentRows, 
             int rowPosition ,int left = 0)
         {
-            if(left <= properties.Length) 
+            if(left < properties.Length) 
             {
                 if (attributeValues.TryGetValue(properties[left].Name, out object? value))
                 {
                     var propertyName = value;
 
                     object propertyValue;
-                    if (properties[left].PropertyType == typeof(int) || properties[left].PropertyType == typeof(int?))
-                    {
-                        var fieldValue = ExtractValue(currentRows, propertyName, rowPosition);
-                        propertyValue = int.Parse(fieldValue);
 
-                    }
-                    else if (properties[left].PropertyType == typeof(Enum))
-                    {
-                        var currentValue = ExtractValue(currentRows, propertyName, rowPosition);
-                        propertyValue = Enum.Parse(properties[left].PropertyType, currentValue);
+                    var fieldValue = ExtractValue(currentRows, propertyName, rowPosition);
 
-                    }
-                    else if (properties[left].PropertyType == typeof(double) || properties[left].PropertyType == typeof(double?))
-                    {
-                        var fieldValue = ExtractValue(currentRows, propertyName, rowPosition);
-                        propertyValue = double.Parse(fieldValue);
+                    propertyValue = Convert.ChangeType(fieldValue, properties[left].PropertyType);
 
-                    }else if(properties[left].PropertyType == typeof(DateTime) || properties[left].PropertyType == typeof(DateTime?))
-                    {
-                        var fieldValue = ExtractValue(currentRows, propertyName, rowPosition);
-                        propertyValue = DateTime.Parse(fieldValue);
-                    }
-                    else
-                    {
-                        propertyValue = ExtractValue(currentRows, propertyName, rowPosition);
-                    }
                     if (propertyValue != null)
                         properties[left].SetValue(instance, propertyValue);
                 }
-                ExtractProperties(instance, properties, attributeValues, currentRows ,rowPosition, left++);
+                ExtractProperties(instance, properties, attributeValues, currentRows ,rowPosition, ++left);
             }
         }
 
@@ -80,7 +59,7 @@ namespace Excelify.Services.Utility
         /// <param name="rows">Includes the extracted values</param>
         /// <param name="proposedName">The name of the column from the attribute</param>
         /// <param name="left">used for iteration</param>
-        /// <returns>an object</returns>
+        /// <returns>a string value/returns>
         private string ExtractValue(List<DataRow> rows, object proposedName, int left)
         {
             if (proposedName.GetType().Name == typeof(string).Name)
