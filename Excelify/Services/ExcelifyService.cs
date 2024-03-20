@@ -2,7 +2,7 @@
 using Excelify.Services.Extensions;
 using Excelify.Services.Utility;
 using Excelify.Services.Utility.Attributes;
-using NPOI.XSSF.UserModel;
+using System.ComponentModel;
 using System.Data;
 
 namespace Excelify.Services
@@ -10,9 +10,24 @@ namespace Excelify.Services
     public class ExcelifyService : ExcelService
     {
 
-        public override void SetSheetName(int sheetName = 0)
+        public override void SetSheetName(int sheetName , string extensionType)
         {
-            _sheetName = sheetName;
+            if(string.IsNullOrEmpty(extensionType))
+                throw new ArgumentNullException(nameof(extensionType),"Extension type can not be empty");
+
+            if (sheetName < 0)
+                throw new ArgumentNullException(nameof(sheetName), "Invalid sheet name");
+
+
+            if(extensionType.Equals(ExtensionType.xls.GetDescription<DescriptionAttribute>()) ||
+                extensionType.Equals(ExtensionType.xlsx.GetDescription<DescriptionAttribute>()))
+            {
+                _sheetName = sheetName;
+            }
+            else
+            {
+                throw new Exception("Invalid extension type", new Exception("Only xls and xlsx are accepted"));
+            }
         }
 
 
@@ -44,26 +59,17 @@ namespace Excelify.Services
             return entities;
         }
 
-        public override Stream ExportToExcel<T>(IEntityExport<T> dataExport, string fileName)
-        {
-            var extractedAttributes = ExcelifyRecord.GetAttributeProperty<ExcelifyAttribute,T>();
-
-            var excelSheet = dataExport.CreateSheet(extractedAttributes);
-
-            using var fileStream = new FileStream($"{fileName}.xlsx", FileMode.Create, FileAccess.Write);
-           
-            excelSheet.Write(fileStream);
-
-            return fileStream;
-        }
-
-        public override XSSFWorkbook ExportToExcel<T>(IEntityExport<T> dataExport)
+        public override byte[] ExportToExcel<T>(IEntityExport<T> dataExport)
         {
             var extractedAttributes = ExcelifyRecord.GetAttributeProperty<ExcelifyAttribute, T>();
 
             var excelSheet = dataExport.CreateSheet(extractedAttributes);
 
-            return excelSheet;
+            using var memoryStream = new MemoryStream();
+
+            excelSheet.Write(memoryStream);
+
+            return memoryStream.ToArray();
         }
 
         private int _sheetName;

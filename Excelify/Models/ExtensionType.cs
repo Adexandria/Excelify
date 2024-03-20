@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Excelify.Models
 {
-    public enum ExcelifyExtensionType
+    public enum ExtensionType
     {
         [Description("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")]
         xlsx,

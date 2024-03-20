@@ -2,12 +2,8 @@
 
 namespace Excelify.API.Models
 {
-    public class ImportSheet : IImportSheet
+    public class ImportSheet(Stream file) : IImportSheet
     {
-        public ImportSheet(Stream file)
-        {
-            File = file;
-        }
-        public Stream File { get; set; }
+        public Stream File { get; set; } = file;
     }
 }

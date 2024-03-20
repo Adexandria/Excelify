@@ -86,6 +86,18 @@ namespace Excelify.Services.Extensions
             return workBook;
         }
 
+        public static void WriteToFile(this byte[] workbook, string fileName)
+        {
+            if(string.IsNullOrEmpty(fileName) || string.IsNullOrWhiteSpace(fileName))
+            {
+                throw new ArgumentNullException(nameof(fileName), "File name can not be empty");
+            }
+
+            using var fileStream = new FileStream($"{fileName}.xlsx", FileMode.Create, FileAccess.Write);
+
+            fileStream.Write(workbook,0, workbook.Length);
+        }
+
         private static void InsertValues<T>(ISheet sheet, IList<T> entities, string propertyName, int cellNumber, int rowNumber = 1)
         {
             if (rowNumber <= entities.Count)
@@ -132,6 +144,5 @@ namespace Excelify.Services.Extensions
                 InsertValues(sheet, entities, propertyName, cellNumber, ++rowNumber);
             }
         }
-
     }
 }

@@ -1,8 +1,7 @@
 ﻿using Excelify.API.Models;
 using Excelify.Services;
-using Microsoft.AspNetCore.Http;
+using Excelify.Services.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using NPOI.SS.UserModel;
 
 namespace Excelify.API.Controllers
 {
@@ -10,23 +9,21 @@ namespace Excelify.API.Controllers
     [ApiController]
     public class ExcelController : ControllerBase
     {
-        public ExcelController()
+        public ExcelController(IExcelService excelService)
         {
-                
+            _excelService = excelService;      
         }
         [HttpPost("import/{sheetName}")]
         public  IActionResult ImportExcel(IFormFile sheet,int sheetName = 0)
         {
-            var excelService = new ExcelifyFactory().CreateService(sheet.ContentType);
-
-            excelService.SetSheetName(sheetName);
+            _excelService.SetSheetName(sheetName,sheet.ContentType);
             try
             {
                 var ms = new MemoryStream();
                 sheet.CopyTo(ms);
                 ms.Position = 0;
 
-                var teacherDtos = excelService.ImportToEntity<TeacherDTO>(new ImportSheet(ms));
+                var teacherDtos = _excelService.ImportToEntity<TeacherDTO>(new ImportSheet(ms));
 
                 if (teacherDtos.Count == 0)
                 {
@@ -73,8 +70,8 @@ namespace Excelify.API.Controllers
 
             try
             {
-                var excelService = new ExcelifyFactory().CreateService();
-                var workBook = excelService.ExportToExcel(exportEntity, $"{sheetName}.xlsx");
+                _excelService.ExportToExcel(exportEntity)
+                    .ToFile($"{sheetName}.xlsx");
                 return Ok();
             }
             catch (Exception ex)
@@ -82,5 +79,7 @@ namespace Excelify.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        private readonly IExcelService _excelService;
     }
 }

@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Excelify\Excelify\Excelify.csproj" />
+    <ProjectReference Include="..\Excelify\Excelify.csproj" />
   </ItemGroup>
 
 </Project>

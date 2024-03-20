@@ -1,10 +1,28 @@
 ﻿using Excelify.Services.Utility.Attributes;
+using System.ComponentModel;
 
 
 namespace Excelify.Services.Utility
 {
-    internal class ExcelifyRecord
+    internal static class ExcelifyRecord
     {
+        public static string GetDescription<TAttribute>(this Enum value) where TAttribute : DescriptionAttribute
+        {
+            var propertyInfo = value.GetType().GetMember(value.ToString());
+            if(propertyInfo.Length == 0)
+            {
+                 throw new NullReferenceException("properties not found");
+            }
+            if (propertyInfo[0].GetCustomAttributes(false).FirstOrDefault() is DescriptionAttribute attribute)
+            {
+                return attribute.Description;
+            }
+            else
+            {
+                return value.ToString();
+            }
+        }
+
         /// <summary>
         ///  Get the property name and attribute name
         /// </summary>
